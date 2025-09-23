@@ -519,18 +519,19 @@ export default {
         }
         window.electron
           .launchCommandBeforeExport(this.PostExportsCommand, variablesFormat)
-          .then((success, _) => {
+          .then(async (success, _) => {
             if (!success) {
               this.exportCommandOutput = null
               const formData = new FormData()
-              const file = new File(
-                [window.electron.file.readFileSync(data.file)],
-                data.file,
-                { type: isAnimation ? 'video/mpeg' : 'image/jpeg' }
-              )
-              formData.append('file', file, file.name)
-              this.forms = this.forms.concat(formData)
-              this.$emit('fileselected', this.forms)
+              try {
+                const file = await this.safeReadFile(data.file, isAnimation)
+                formData.append('file', file, file.name)
+                this.forms = this.forms.concat(formData)
+                this.$emit('fileselected', this.forms)
+              } catch (error) {
+                console.error('Failed to read file:', error)
+                this.$emit('error', error.message)
+              }
               this.isCurrentlyOnTake = false
             } else {
               if (isAnimation) DCCClient.isCurrentlyOnTakeAnimation = true
@@ -538,20 +539,21 @@ export default {
 
               window.electron.ipcRenderer.on(
                 'commandOutput', 
-                (_, commandOutput) => {
+                async (_, commandOutput) => {
                   this.exportCommandOutput = commandOutput
                   this.exportCommandOutput.output = this.AnsiUp.ansi_to_html(
                     this.exportCommandOutput.output
                   )
                   const formData = new FormData()
-                  const file = new File(
-                    [window.electron.file.readFileSync(data.file)],
-                    data.file,
-                    { type: isAnimation ? 'video/mpeg' : 'image/jpeg' }
-                  )
-                  formData.append('file', file, file.name)
-                  this.forms = this.forms.concat(formData)
-                  this.$emit('fileselected', this.forms)
+                  try {
+                    const file = await this.safeReadFile(data.file, isAnimation)
+                    formData.append('file', file, file.name)
+                    this.forms = this.forms.concat(formData)
+                    this.$emit('fileselected', this.forms)
+                  } catch (error) {
+                    console.error('Failed to read file:', error)
+                    this.$emit('error', error.message)
+                  }
                   this.isCurrentlyOnTake = false
                   if (isAnimation) DCCClient.isCurrentlyOnTakeAnimation = false
                   else DCCClient.isCurrentlyOnTakeScreenshot = false
@@ -565,6 +567,38 @@ export default {
 
     removePreview(form) {
       this.forms = this.forms.filter((f) => f !== form)
+    },
+
+    async safeReadFile(filepath, isAnimation = false) {
+      try {
+        // Wait for file to exist and have content
+        const fileExists = await window.electron.file.waitForFile(filepath, 20, 250)
+        
+        let actualFilePath = filepath
+        
+        if (!fileExists) {
+          // Extract filename and search for it
+          const filename = filepath.split(/[/\\]/).pop()
+          console.log('Searching for filename:', filename)
+          
+          actualFilePath = window.electron.file.findFileByName(filename)
+          console.log('Found file at:', actualFilePath)
+          
+          if (!actualFilePath) {
+            throw new Error(`File not found: ${filename}`)
+          }
+        }
+        
+        const fileBuffer = window.electron.file.readFileSync(actualFilePath)
+        return new File(
+          [fileBuffer],
+          actualFilePath,
+          { type: isAnimation ? 'video/mpeg' : 'image/jpeg' }
+        )
+      } catch (error) {
+        console.error('Error reading file:', error)
+        throw error
+      }
     }
   },
 

@@ -155,7 +155,7 @@ const createWindow = async () => {
 
   var codePage = undefined
   if (process.platform === 'win32') {
-    exec('chcp', (err, stdout, stderr) => {
+    exec('chcp', (_, stdout) => {
       if (stdout) {
         try {
           codePage = Number(stdout.split(':')[1])
