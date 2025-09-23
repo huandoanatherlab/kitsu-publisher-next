@@ -8,18 +8,6 @@
 
     <nav class="nav">
       <div class="nav-left">
-        <div class="production-selector">
-          <combobox
-            :model-value="currentProduction?.id"
-            :options="productionOptions"
-            :with-margin="false"
-            :is-inline="true"
-            @update:model-value="onProductionChange"
-          />
-        </div>
-        <div>
-          <!-- Route to assets -->
-        </div>
         <div
           v-if="!$route.path.startsWith('/todos')"
           class="nav-item"
@@ -34,6 +22,27 @@
               :width="24"
             />
             {{ $t('main.go_todos') }}
+          </router-link>
+        </div>
+
+        <!-- Production selector -->
+        <div class="production-selector">
+          <combobox
+            :model-value="currentProduction?.id"
+            :options="productionOptions"
+            :with-margin="false"
+            :is-inline="true"
+            @update:model-value="onProductionChange"
+          />
+        </div>
+        
+        <!-- Concepts navigation -->
+        <div 
+          v-if="!$route.path.startsWith('/concepts')" 
+          class="nav-item"
+        >
+          <router-link to="/concepts">
+            {{ $t('menu.concepts') }}
           </router-link>
         </div>
       </div>

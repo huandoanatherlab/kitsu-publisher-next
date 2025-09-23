@@ -18,6 +18,7 @@ const ServerDown = () => import('@/components/pages/ServerDown')
 const Settings = () => import('@/components/pages/Settings')
 const Shot = () => import('@/components/pages/Shot')
 const Task = () => import('@/components/pages/Task')
+const Concepts = () => import('@/components/pages/Concepts')
 
 const routes = [
   {
@@ -69,6 +70,11 @@ const routes = [
         component: Todos,
         name: 'todos',
         children: [{ path: ':tab', component: Todos, name: 'todos-tab' }]
+      },
+      {
+        path: 'concepts',
+        component: Concepts,
+        name: 'concepts'
       },
 
       {

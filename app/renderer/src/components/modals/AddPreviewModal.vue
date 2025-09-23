@@ -26,11 +26,11 @@
           v-else
           class="title"
         >
-          {{ $t('tasks.add_preview') }}
+          {{ isConcept ? $t('concepts.add_concept') : $t('tasks.add_preview') }}
         </h1>
 
         <p>
-          {{ $t('tasks.select_preview_file') }}
+          {{ isConcept ? $t('concepts.select_preview_file') : $t('tasks.select_preview_file') }}
         </p>
 
         <file-upload
@@ -322,7 +322,7 @@
               'is-loading': isLoading,
               'is-disabled': forms.length === 0 || isCurrentlyOnTake
             }"
-            @click="$emit('confirm')"
+            @click="$emit('confirm', forms)"
           >
             {{ $t('tasks.add_revision_confirm') }}
           </a>
@@ -384,6 +384,10 @@ export default {
     currentTask: {
       type: Object,
       default: null
+    },
+    isConcept: {
+      type: Boolean,
+      default: false,
     }
   },
 

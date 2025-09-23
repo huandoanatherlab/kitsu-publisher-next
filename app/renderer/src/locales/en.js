@@ -499,7 +499,26 @@ export default {
     delete_tasks: 'Delete tasks',
     generate_playlists: 'Generate playlists',
     run_custom_action: 'Run custom action',
-    set_estimations: 'Set estimations'
+    set_estimations: 'Set estimations',
+    concepts: 'Concepts'
+  },
+
+  concepts: {
+    title: 'Concepts',
+    empty: 'No concepts found in this production.',
+    add_concept: 'Add files for a new concept',
+    select_preview_file:
+      'Please select files (picture, movie or others) from your hard drive to be used as a new concept for your current production:',
+    fields: {
+      search: 'Search concepts'
+    },
+    actions: {
+      add: 'Add Concept',
+      load_more: 'Load more'
+    },
+    errors: {
+      loading: 'Error loading concepts'
+    }
   },
 
   news: {

@@ -337,7 +337,7 @@ const actions = {
           reject(err)
         } else {
           commit(NEW_TASK_END, tasks[0])
-          resolve()
+          resolve(tasks[0])
         }
       })
     })
