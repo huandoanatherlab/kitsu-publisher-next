@@ -211,6 +211,7 @@ export default {
 
   computed: {
     ...mapGetters([
+      'currentProduction',
       'displayedDoneTasks',
       'displayedTodos',
       'isTodosLoading',
@@ -446,6 +447,22 @@ export default {
   watch: {
     $route() {
       this.updateActiveTab()
+    },
+    
+    currentProduction() {
+      // Re-fetch todos when production changes
+      this.loadTodos({
+        date: this.selectedDate,
+        forced: true,
+        callback: () => {
+          if (this.todoList) {
+            this.$nextTick(() => {
+              this.todoList.setScrollPosition(this.todoListScrollPosition)
+            })
+          }
+          this.resizeHeaders()
+        }
+      })
     }
   },
 

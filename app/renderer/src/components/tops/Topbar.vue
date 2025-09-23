@@ -8,6 +8,18 @@
 
     <nav class="nav">
       <div class="nav-left">
+        <div class="production-selector">
+          <combobox
+            :model-value="currentProduction?.id"
+            :options="productionOptions"
+            :with-margin="false"
+            :is-inline="true"
+            @update:model-value="onProductionChange"
+          />
+        </div>
+        <div>
+          <!-- Route to assets -->
+        </div>
         <div
           v-if="!$route.path.startsWith('/todos')"
           class="nav-item"
@@ -157,6 +169,7 @@
 <script>
 import { mapGetters, mapActions } from 'vuex'
 import Icon from '@/components/widgets/Icon'
+import Combobox from '@/components/widgets/Combobox'
 
 import PeopleAvatar from '@/components/widgets/PeopleAvatar'
 import ShortcutModal from '@/components/modals/ShortcutModal'
@@ -165,6 +178,7 @@ export default {
   name: 'Topbar',
   components: {
     Icon,
+    Combobox,
     PeopleAvatar,
     ShortcutModal
   },
@@ -179,11 +193,19 @@ export default {
   },
 
   computed: {
-    ...mapGetters(['isDarkTheme', 'isUserMenuHidden', 'user'])
+    ...mapGetters(['isDarkTheme', 'isUserMenuHidden', 'user', 'currentProduction', 'productions', 'productionMap', 'openProductions', 'openProductionOptions']),
+    
+    productionOptions() {
+      return this.openProductionOptions
+    }
   },
 
   methods: {
-    ...mapActions(['logout', 'toggleDarkTheme', 'toggleUserMenu']),
+    ...mapActions(['logout', 'toggleDarkTheme', 'toggleUserMenu', 'setProduction']),
+
+    onProductionChange(productionId) {
+      this.setProduction(productionId)
+    },
 
     onLogoutClicked() {
       this.logout((err, success) => {
@@ -254,8 +276,6 @@ export default {
   cursor: pointer;
 }
 
-.user-nav.active {
-}
 
 .user-menu {
   position: fixed;
@@ -308,6 +328,16 @@ export default {
 #c-mask-user-menu.is-active {
   width: 100%;
   height: 100%;
+}
+
+.nav-left {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.production-selector {
+  min-width: 200px;
 }
 
 .nav-right {
