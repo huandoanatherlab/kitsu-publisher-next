@@ -67,7 +67,7 @@ export default {
     previewPath() {
       const id = this.previewFileId
       return this.active && this.previewFileId
-        ? '/api/pictures/originals/preview-files/' + id + '.png'
+        ? `${this.$store.state.login.server}/api/pictures/originals/preview-files/${id}.png`
         : ''
     }
   },

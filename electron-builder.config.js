@@ -17,7 +17,7 @@ const config = {
   },
   win: {
     publisherName: 'CGWire',
-    certificateSubjectName: 'CGWire',
+    // certificateSubjectName: 'CGWire', // Commented out to disable code signing
     target: ['nsis', 'portable', 'zip', 'msi']
   },
   mac: {
