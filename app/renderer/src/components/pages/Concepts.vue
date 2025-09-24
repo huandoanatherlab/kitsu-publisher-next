@@ -163,6 +163,15 @@ export default {
     await this.loadConcepts()
   },
 
+  watch: {
+    currentProduction: {
+      handler() {
+        this.loadConcepts()
+      },
+      deep: true
+    }
+  },
+
   methods: {
     ...mapActions([
       'loadConcepts',
